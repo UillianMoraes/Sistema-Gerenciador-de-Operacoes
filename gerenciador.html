@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciador de Operações</title>
+    <style>
+    h1 {text-align: center; color: #0036a1;}
+    body{background-color: #76a2f8;}
+    input{width: 60px;}
+    label{font-size: 13px;}
+    select{font-size: 13px;}   
+
+    /* Responsividade*/
+    @media(max-width:600px){ 
+    h1{font-size: 22px;}
+    label{font-size: 10px;}
+    select{font-size: 10px;}
+    input{font-size: 10px;}}
+    </style>
+</head>
+<body>
+    <h1>Sistema Gerenciador de Operações <em><strong>Muito Dinheiro</strong></em></h1>
+
+    <strong>Cliente </strong><label for="linguagem"></label>
+    <input name = "nomeclientes" list="nome" style="width: 150px;">
+    <!--Campo onde adiciona-se o nome do cliente--> 
+    <datalist id="nome">
+        <option value="Willi Corleone">
+        <option value="Chele Brasi">
+        <option value="Nick Snider">
+        <option value="Bill Portas">
+        <option value="Jefferson Bisão">
+    </datalist>       
+           
+    <!--Campo onde adiciona-se a data-->
+    <strong>Data </strong> <input type="date" style="width: 110px; font-size: 11px;">
+
+    <!--Moedas de origem-->
+    <strong>Moeda de Origem </strong>
+        <select id="currency-one">
+        <option value="AED">AED</option>
+        <option value="ARS">ARS</option>
+        <option value="AUD">AUD</option>
+        <option value="BGN">BGN</option>
+        <option value="BRL">BRL</option>
+        <option value="BSD">BSD</option>
+        <option value="CAD">CAD</option>
+        <option value="CHF">CHF</option>
+        <option value="CLP">CLP</option>
+        <option value="CNY">CNY</option>
+        <option value="COP">COP</option>
+        <option value="CZK">CZK</option>
+        <option value="DKK">DKK</option>
+        <option value="DOP">DOP</option>
+        <option value="EGP">EGP</option>
+        <option value="EUR">EUR</option>
+        <option value="FJD">FJD</option>
+        <option value="GBP">GBP</option>
+        <option value="GTQ">GTQ</option>
+        <option value="HKD">HKD</option>
+        <option value="HRK">HRK</option>
+        <option value="HUF">HUF</option>
+        <option value="IDR">IDR</option>
+        <option value="ILS">ILS</option>
+        <option value="INR">INR</option>
+        <option value="ISK">ISK</option>
+        <option value="JPY">JPY</option>
+        <option value="KRW">KRW</option>
+        <option value="KZT">KZT</option>
+        <option value="MXN">MXN</option>
+        <option value="MYR">MYR</option>
+        <option value="NOK">NOK</option>
+        <option value="NZD">NZD</option>
+        <option value="PAB">PAB</option>
+        <option value="PEN">PEN</option>
+        <option value="PHP">PHP</option>
+        <option value="PKR">PKR</option>
+        <option value="PLN">PLN</option>
+        <option value="PYG">PYG</option>
+        <option value="RON">RON</option>
+        <option value="RUB">RUB</option>
+        <option value="SAR">SAR</option>
+        <option value="SEK">SEK</option>
+        <option value="SGD">SGD</option>
+        <option value="THB">THB</option>
+        <option value="TRY">TRY</option>
+        <option value="TWD">TWD</option>
+        <option value="UAH">UAH</option>
+        <option value="USD" selected>USD</option>
+        <option value="UYU">UYU</option>
+        <option value="VND">VND</option>
+        <option value="ZAR">ZAR</option>
+        </select>
+        <input type="number" id="amount-one" placeholder="0" value="1"/>
+
+    <!--Moeda de destino-->
+    <strong>Moeda de Destino</strong>
+    <select id="currency-two">              
+    <option value="BRL">BRL</option>          
+    </select>
+    <!--Botões de taxa e total--> 
+    <strong>Taxa de Câmbio R$ </strong> <input id="taxa" type="number" taxa="taxa">
+    <strong>Total Convertido </strong>
+    <input id="amount-two" type="number"  placeholder="0" style="width: 90px;">       
+    <div class="rate" id="rate"></div>
+    
+<script>
+      // Variáveis
+    const currencyEl_one = document.getElementById('currency-one');
+    const amountEl_one = document.getElementById('amount-one');
+    const currencyEl_two = document.getElementById('currency-two');
+    const amountEl_two = document.getElementById('amount-two');
+    const rateEl = document.getElementById('rate');
+    const swap = document.getElementById('swap');
+
+    // Função de cálculo de câmbio
+    function calculate() {
+    const currency_one = currencyEl_one.value;
+    const currency_two = currencyEl_two.value;
+    // Dados de câmbio
+    fetch(`https://api.exchangerate-api.com/v4/latest/${currency_one}`)
+    .then(res => res.json())
+    .then(data => {
+
+    const rate = data.rates[currency_two];
+    rateEl.innerText = `1 ${currency_one} = ${rate} ${currency_two}`;
+    amountEl_two.value = (amountEl_one.value * rate).toFixed(2);
+    });
+    }
+
+    currencyEl_one.addEventListener('change', calculate);
+    amountEl_one.addEventListener('input', calculate);
+    currencyEl_two.addEventListener('change', calculate);
+    amountEl_two.addEventListener('input', calculate);
+
+
+    // Calcular câmbio das moedas
+    swap.addEventListener('click', () => {
+    const temp = currencyEl_one.value;
+    currencyEl_one.value = currencyEl_two.value;
+    currencyEl_two.value = temp; 
+    calculate();
+    });
+
+    calculate();
+</script>       
+           
+</body>
+</html>
